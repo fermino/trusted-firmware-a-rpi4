@@ -1,0 +1,10 @@
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = trusted-firmware-a-rpi4
+
+[Action]
+Description = Updating TF-A for the Raspberry Pi 4 on the boot partition...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/trusted-firmware-a-rpi4-install

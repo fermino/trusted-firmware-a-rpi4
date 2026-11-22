@@ -1,0 +1,23 @@
+pkgbase = trusted-firmware-a-rpi4
+	pkgdesc = Trusted Firmware-A BL31 for the Raspberry Pi 4, as an armstub providing PSCI
+	pkgver = 2.16rc0
+	pkgrel = 1
+	url = https://www.trustedfirmware.org/projects/tf-a/
+	arch = any
+	license = BSD-3-Clause
+	license = BSD-2-Clause OR GPL-2.0-or-later
+	makedepends = git
+	depends = bash
+	depends = util-linux
+	optdepends = raspberrypi-bootloader-rpi4: start4.elf and fixup4.dat on the boot partition
+	options = !buildflags
+	source = trusted-firmware-a::git+https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git#tag=v2.16-rc0
+	source = dtc::git+https://git.kernel.org/pub/scm/utils/dtc/dtc.git#commit=8f48565e5cfedc74d3f7512f1e0188e9d85dc1de
+	source = trusted-firmware-a-rpi4-install
+	source = trusted-firmware-a-rpi4-install.hook
+	sha256sums = c65c4909379e69968594966b92ff81454ce159fa37c47aec6a4d02070fec0918
+	sha256sums = eebcca9d985422a2e244650eaf766880329111a11314509a3678c08e0799636a
+	sha256sums = 3d7438d5bb09d27920176cb77c7c01c7389d2552a7b4c2cbb9efae8de267bc31
+	sha256sums = bdb922719d3cc5b07803700acc8074bef3bd641370bd3781c3044a9027c6f42a
+
+pkgname = trusted-firmware-a-rpi4

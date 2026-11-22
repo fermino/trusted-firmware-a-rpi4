@@ -1,0 +1,8 @@
+*
+
+!.gitignore
+!.nvchecker.toml
+!.SRCINFO
+!PKGBUILD
+!trusted-firmware-a-rpi4-install
+!trusted-firmware-a-rpi4-install.hook

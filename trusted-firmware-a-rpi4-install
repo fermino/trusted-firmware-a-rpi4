@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SRC='/usr/lib/trusted-firmware-a-rpi4/boot/tfa-bl31.bin'
+if [[ ! -f "$SRC" ]]; then
+    echo "trusted-firmware-a-rpi4-install: $SRC is missing" >&2
+    exit 2
+fi
+
+# Find install location
+MOUNTPOINT=""
+for MNT in /boot /boot/efi /efi; do
+    if [[ "$(findmnt -no FSTYPE --mountpoint "$MNT" 2>/dev/null)" != "vfat" ]]; then
+        continue
+    fi
+    if [[ -n "$MOUNTPOINT" ]]; then
+        echo "trusted-firmware-a-rpi4-install: several FAT partitions found" >&2
+        exit 3
+    fi
+    MOUNTPOINT="$MNT"
+done
+if [[ -z "$MOUNTPOINT" ]]; then
+    echo "trusted-firmware-a-rpi4-install: no FAT partition found at /boot, /boot/efi or /efi" >&2
+    exit 4
+fi
+
+# Installation
+# As FAT filesystems don't have atomic operations, copy the armstub as .new
+# first and only then rename it over the old one, so a power cut leaves at
+# worst a stray .new rather than a half-written armstub.
+DEST="$MOUNTPOINT/tfa-bl31.bin"
+trap 'rm -f "$DEST.new"' EXIT
+
+cp -f "$SRC" "$DEST.new"
+sync "$DEST.new"
+mv -f "$DEST.new" "$DEST"
+# Flush the rename too, only on the boot partition
+sync -f "$MOUNTPOINT"
+
+# config.txt belongs to whoever set the board up, so it's never edited here.
+# Only point out that the armstub isn't loaded yet. The line may also come in
+# through an include, hence "doesn't seem to".
+if ! grep -Eqs '^[[:space:]]*armstub=tfa-bl31\.bin[[:space:]]*$' "$MOUNTPOINT/config.txt"; then
+    cat >&2 <<EOF
+trusted-firmware-a-rpi4-install: $MOUNTPOINT/config.txt doesn't seem to load TF-A yet. Add:
+    arm_64bit=1
+    enable_gic=1
+    armstub=tfa-bl31.bin
+EOF
+fi
