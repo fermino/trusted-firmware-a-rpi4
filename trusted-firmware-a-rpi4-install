@@ -38,13 +38,23 @@ mv -f "$DEST.new" "$DEST"
 sync -f "$MOUNTPOINT"
 
 # config.txt belongs to whoever set the board up, so it's never edited here.
-# Only point out that the armstub isn't loaded yet. The line may also come in
-# through an include, hence "doesn't seem to".
-if ! grep -Eqs '^[[:space:]]*armstub=tfa-bl31\.bin[[:space:]]*$' "$MOUNTPOINT/config.txt"; then
+# Only point out what's missing. The lines may also come in through an
+# include, hence "doesn't seem to".
+# BL31 grows the device tree in place, and the firmware may have put the
+# initramfs right after it. device_tree_address gives the tree a window of
+# its own, between BL31 (up to 0x80000) and the kernel (at 0x200000).
+CONFIG="$MOUNTPOINT/config.txt"
+
+if ! grep -Eqs '^[[:space:]]*armstub=/tfa-bl31\.bin[[:space:]]*$' "$CONFIG" ||
+    ! grep -Eqs '^[[:space:]]*device_tree_address=' "$CONFIG"; then
     cat >&2 <<EOF
-trusted-firmware-a-rpi4-install: $MOUNTPOINT/config.txt doesn't seem to load TF-A yet. Add:
+trusted-firmware-a-rpi4-install: $CONFIG doesn't seem to be set up for TF-A yet. Add:
     arm_64bit=1
     enable_gic=1
-    armstub=tfa-bl31.bin
+    # Partition root, in case os_prefix is being used
+    armstub=/tfa-bl31.bin
+    # Give enough space in RAM for the devicetree patches
+    device_tree_address=0x100000
+    device_tree_end=0x200000
 EOF
 fi
