@@ -9,7 +9,7 @@ fi
 
 # Find install location
 MOUNTPOINT=""
-for MNT in /boot /boot/efi /efi; do
+for MNT in /boot /boot/firmware /boot/efi /efi; do
     if [[ "$(findmnt -no FSTYPE --mountpoint "$MNT" 2>/dev/null)" != "vfat" ]]; then
         continue
     fi
@@ -20,7 +20,7 @@ for MNT in /boot /boot/efi /efi; do
     MOUNTPOINT="$MNT"
 done
 if [[ -z "$MOUNTPOINT" ]]; then
-    echo "trusted-firmware-a-rpi4-install: no FAT partition found at /boot, /boot/efi or /efi" >&2
+    echo "trusted-firmware-a-rpi4-install: no FAT partition found at /boot, /boot/firmware, /boot/efi or /efi" >&2
     exit 4
 fi
 

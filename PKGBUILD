@@ -6,7 +6,7 @@ _tag=v2.16-rc0
 _dtc=8f48565e5cfedc74d3f7512f1e0188e9d85dc1de
 pkgver=${_tag#v}
 pkgver=${pkgver//-/}
-pkgrel=2
+pkgrel=3
 pkgdesc='Trusted Firmware-A BL31 for the Raspberry Pi 4, as an armstub providing PSCI'
 arch=(any)
 url='https://www.trustedfirmware.org/projects/tf-a/'
@@ -23,7 +23,7 @@ source=(
 )
 sha256sums=('c65c4909379e69968594966b92ff81454ce159fa37c47aec6a4d02070fec0918'
             'eebcca9d985422a2e244650eaf766880329111a11314509a3678c08e0799636a'
-            'f4c2ed541957d41c04602c6571c5e178a67d714da3b5060773df3b9f97661107'
+            'addba57cdd8cac909c9d0fd5286ef7763c0352dd559d607588b5275deb9630fe'
             'bdb922719d3cc5b07803700acc8074bef3bd641370bd3781c3044a9027c6f42a')
 
 prepare() {
